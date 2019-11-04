@@ -88,13 +88,13 @@ def run_esp(args, dmx):
         'fps': 0,
         'last_frame': time.time(),
     }
-    def node_data(*a):
-        data = {
+    def handle_node_data(*a):
+        node_data = {
             'uptime': int(time.time() - data['start']),
             'fps': data['fps'],
         }
-        data = ';'.join(f'{k}={v}' for k, v in data.items()).encode('utf-8')
-        return data
+        node_data = ';'.join(f'{k}={v}' for k, v in node_data.items()).encode('utf-8')
+        return node_data
 
     def handle_dmx(universe, start_code, channels):
         data['fps'] = 2 / (time.time() - data['last_frame'])
@@ -112,6 +112,6 @@ def run_esp(args, dmx):
 
     try:
         while True:
-            esp.process_packet(poll_reply_data_cb=node_data, dmx_cb=handle_dmx)
+            esp.process_packet(poll_reply_data_cb=handle_node_data, dmx_cb=handle_dmx)
     except KeyboardInterrupt:
         pass
